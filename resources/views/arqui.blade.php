@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arquitectura</title>
+    <style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0 20px 0 20px;
+        background-color: #f4f4f4;
+    }
+
+    h1 {
+        text-align: center;
+    }
+
+    .container {
+        margin-top: 20px;
+        overflow-x: auto;
+        /* Permite el desplazamiento horizontal si la tabla es ancha */
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+    }
+
+    th,
+    td {
+        padding: 10px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #f4f4f4;
+    }
+
+    tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .btn-generate {
+        display: inline-block;
+        margin-top: 10px;
+        padding: 10px 20px;
+        font-size: 1em;
+        color: white;
+        background-color: #007bff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        text-decoration: none;
+    }
+
+    .btn-generate:hover {
+        background-color: #0056b3;
+    }
+
+    /* Estilo del Modal */
+    .modal {
+        display: none;
+        /* Oculta el modal por defecto */
+        position: fixed;
+        /* Fija el modal en la pantalla */
+        z-index: 1;
+        /* Asegura que el modal esté encima de otros elementos */
+        left: 0;
+        top: 0;
+        width: 100%;
+        /* Ancho completo */
+        height: 100%;
+        /* Alto completo */
+        overflow: auto;
+        /* Permite el desplazamiento si es necesario */
+        background-color: rgba(0, 0, 0, 0.4);
+        /* Fondo semitransparente */
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 10% auto;
+        /* Centra el modal verticalmente */
+        padding: 20px;
+        border: 1px solid #888;
+        width: 600px;
+        /* Ancho del modal */
+        max-width: 90%;
+        /* Máximo ancho del modal */
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .close-btn {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close-btn:hover,
+    .close-btn:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    /* Estilo para el formulario en el modal */
+    form {
+        display: flex;
+        flex-direction: column;
+        /* Disposición en columna */
+        gap: 10px;
+        /* Espacio entre los campos */
+    }
+
+    label {
+        font-weight: bold;
+    }
+
+    input[type="text"],
+    input[type="int"],
+    textarea,
+    input[type="file"] {
+        width: 100%;
+        /* Ancho completo */
+        padding: 8px;
+        /* Espaciado interior */
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    button[type="submit"] {
+        background-color: #007bff;
+        /* Color de fondo del botón */
+        color: white;
+        /* Texto blanco */
+        border: none;
+        padding: 10px;
+        font-size: 1em;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    button[type="submit"]:hover {
+        background-color: #0056b3;
+        /* Color de fondo al pasar el ratón */
+    }
+
+    /* Estilo del botón de cerrar */
+    .close-btn {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close-btn:hover,
+    .close-btn:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    /* Estilo de la barra de navegación */
+    nav {
+        background-color: #e2e2e2;
+        /* Fondo rojo */
+        padding: 10px 20px;
+        /* Espaciado interior */
+        display: flex;
+        /* Usamos flexbox para la disposición de los elementos */
+        justify-content: flex-end;
+        /* Alinea el contenido al final */
+        border-radius: 0 0 8px 8px;
+        /* Bordes redondeados en la parte inferior */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        /* Sombra sutil */
+    }
+
+    nav a,
+    nav button {
+        color: white;
+        /* Texto blanco */
+        text-decoration: none;
+        /* Sin subrayado en el enlace */
+        padding: 10px 20px;
+        /* Espaciado interior */
+        border: none;
+        /* Sin borde en los botones */
+        border-radius: 5px;
+        /* Bordes redondeados */
+        font-size: 1em;
+        /* Tamaño de fuente */
+        cursor: pointer;
+        /* Cursor de mano */
+        margin-left: 10px;
+        /* Espacio entre los elementos */
+    }
+
+
+    nav a {
+        background-color: #6c757d;
+        /* Color de fondo para el enlace */
+        /* margin-right: 10px; Espacio entre el enlace y el botón */
+    }
+
+    nav button {
+        background-color: #6c757d;
+        /* Color de fondo para el botón */
+    }
+
+    nav a:hover,
+    nav button:hover {
+        opacity: 0.8;
+        /* Efecto de hover para ambos */
+    }
+    .img{
+        width: 100px; 
+        height: 60px;
+        border-radius: 10%;
+    }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <a href="{{ url('/admin') }}" class="btn-back">Regresar</a>
+        <!-- Botón para abrir el formulario en modal -->
+        <button id="openModalBtn" class="btn-ge">Agregar Arquitectura</button>
+
+    </nav>
+    <!-- @if (session('success'))
+    <p class="message success">{{ session('success') }}</p>
+    @endif
+
+    @if (session('error'))
+    <p class="message error">{{ session('error') }}</p>
+    @endif -->
+    <!-- Modal para el formulario  -->
+    <div id="formModal" class="modal">
+        <div class="modal-content">
+            <!-- Mensajes de éxito y error -->
+
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <form action="{{ url('/a_post') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <label for="titulo">Titulo:</label>
+                <input type="text" id="titulo" name="titulo">
+
+                <label for="ubicacion">Ubicacion:</label>
+                <input type="text" id="ubicacion" name="ubicacion">
+
+                <label for="descrip">Descripción:</label>
+                <input type="text" id="descrip" name="descrip"></input>
+
+                <label for="foto_arq">Fotografia:</label>
+                <input type="file" id="foto_arq" name="foto_arq" accept="image/*">
+
+                <button type="submit" class="btn-generate">Agregar Contenido</button>
+            </form>
+        </div>
+    </div>
+
+    <h1>Turismo Arquitectonico</h1>
+    <div class="container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Fotografía</th>
+                    <th>Título</th>
+                    <th>Ubicación</th>
+                    <th>Descripción</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if(isset($data['data']) && is_array($data['data']))
+                
+                <!-- <pre>{{ print_r($data['data'], true) }}</pre> -->
+                    @foreach ($data['data'] as $item)
+                        @if (isset($item['attributes']['foto_arq']['data']['attributes']['url']))
+                            <tr>
+                                <td>
+                                    <img class="img" src="{{ 'https://backend-culturas.elalto.gob.bo'.$item['attributes']['foto_arq']['data']['attributes']['url'] }}" alt="Image" >
+                                </td>
+                                <td>{{ $item['attributes']['titulo'] }}</td>
+                                <td>{{ $item['attributes']['ubicacion'] }}</td>
+                                <td>{{ $item['attributes']['descrip'] }}</td>
+                            </tr>
+                        @endif
+                    @endforeach
+                @else
+                    <tr>
+                        <td colspan="4">No data found.</td>
+                    </tr>
+                @endif 
+            </tbody>
+        </table>
+    </div>
+    <script>
+    // Obtener el modal
+    var modal = document.getElementById("formModal");
+
+    // Obtener el botón que abre el modal
+    var openModalBtn = document.getElementById("openModalBtn");
+
+    // Obtener el elemento que cierra el modal
+    var closeBtn = document.getElementsByClassName("close-btn")[0];
+
+    // Cuando el usuario hace clic en el botón, abre el modal
+    openModalBtn.onclick = function() {
+        modal.style.display = "block";
+    }
+
+    // Cuando el usuario hace clic en el botón de cerrar (x), cierra el modal
+    closeBtn.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    // Cuando el usuario hace clic fuera del modal, cierra el modal
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+    </script>
+
+</body>
+
+</html>
