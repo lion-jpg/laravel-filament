@@ -39,7 +39,7 @@ class RoleResource extends Resource
                         Select::make('permissions')
                             ->multiple()
                             ->relationship('permissions', 'name')
-                            ->preload()
+                            ->preload(),
                 ])
             ]);
     }

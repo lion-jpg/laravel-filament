@@ -13,6 +13,6 @@ class TransporteViewer extends Page
 
     public function mount()
     {
-        return redirect('/transportes');
+        return redirect('admin/transportes');
     }
 }

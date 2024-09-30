@@ -294,7 +294,7 @@
             <!-- Mensajes de éxito y error -->
 
             <span class="close-btn" onclick="closeModal()">&times;</span>
-            <form action="{{ url('/add-data') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ url('admin/add-data') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <label for="nombre">Nombre:</label>
                 <input type="text" id="nombre" name="nombre">
@@ -338,7 +338,7 @@
                     <td>{{ $item['attributes']['telefono'] }}</td>
                     <td>{{ $item['attributes']['descripcion'] }}</td>
                     <td><a href="{{ url('/generate-pdf/' . $item['id']) }}" class="btn-generate">Generate PDF</a>
-                        <button onclick="window.location='{{ url('/editar/' . $item['id']) }}'"
+                        <button onclick="window.location='{{ url('admin/editar/' . $item['id']) }}'"
                             class="btn-generate">Editar</button>
                     </td>
 

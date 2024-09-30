@@ -269,7 +269,7 @@
             <!-- Mensajes de éxito y error -->
 
             <span class="close-btn" onclick="closeModal()">&times;</span>
-            <form action="{{ url('/t_post') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ url('admin/t_post') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <label for="titulo">Titulo:</label>
                 <input type="text" id="titulo" name="titulo">
@@ -400,7 +400,7 @@
             imagePreview.appendChild(img);
         }
         // Configurar la acción del formulario de edición
-        document.getElementById("editForm").action = "{{ url('/t_post') }}/" +
+        document.getElementById("editForm").action = "{{ url('admin/t_post') }}/" +
         id; // Asegúrate de que el ID esté disponible
 
         editModal.style.display = "block";

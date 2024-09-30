@@ -6,6 +6,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -19,12 +20,12 @@ class DatabaseSeeder extends Seeder
         $user1 = User::factory()->create([
             'name' => 'Admin',
             'email' => 'admin@gmail.com',
-            'password' => bcrypt('password123'), 
+            'password' => Hash::make('password123'), 
         ]);
         $user2 = User::factory()->create([
             'name' => 'Editar',
             'email' => 'editar@gmail.com',
-            'password' => bcrypt('password123'), 
+            'password' => Hash::make('password123'), 
         ]);
         $role = Role::create(['name' => 'admin']);
         $user1->assignRole($role);

@@ -12,6 +12,6 @@ class DeporteViewer extends Page
 
     public function mount()
     {
-        return redirect('/deportes');
+        return redirect('admin/deportes');
     }
 }

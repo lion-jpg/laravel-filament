@@ -35,12 +35,13 @@ class UserPolicy
      * Determine whether the user can update the model.
      */
     public function update(User $user, User $model): bool
-    {
-        if($user->id == $model->id && $user->hasRole('admin')){
-            return true;
-        }else{
-            return false;
-        }
+    {   
+        return $user->hasRole('admin');
+        // if($user->id == $model->id && $user->hasRole('admin')){
+        //     return true;
+        // }else{
+        //     return false;
+        // }
     }
 
     /**

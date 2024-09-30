@@ -8,4 +8,8 @@ use Spatie\Permission\Models\Role as ModelsRole;
 class Role extends ModelsRole
 {
     use HasFactory;
+    // public function permissions(): BelongsToMany
+    // {
+    //     return $this->belongsToMany(Permission::class);
+    // }
 }

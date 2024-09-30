@@ -11,9 +11,9 @@ class ImageViewer extends Page
     protected static string $view = 'filament.pages.Guias-Registrados';
     protected static ?string $navigationLabel = 'Guias Registrados'; // Cambia el nombre que aparecerá en la navegación
     protected static ?string $navigationIcon = 'heroicon-o-user-plus';
-
+    
     public function mount()
-    {
-        return redirect('/guia');
+    {   
+        return redirect('admin/guia');
     }
 }

@@ -75,7 +75,7 @@ class DeporteController extends Controller
             }
     
             // Envía los datos a la API de Strapi, incluyendo el ID de la imagen
-            $response = $client->post('https://backend-culturas.elalto.gob.bo/api/culturas', [
+            $response = $client->post('https://backend-culturas.elalto.gob.bo/api/deportes', [
                 'json' => [
                     'data' => $data,  // Strapi espera que los datos estén dentro de "data"
                     'foto_dep' => [

@@ -12,6 +12,6 @@ class CulturaViewer extends Page
 
     public function mount()
     {
-        return redirect('/culturas');
+        return redirect('admin/culturas');
     }
 }

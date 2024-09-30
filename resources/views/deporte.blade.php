@@ -249,7 +249,7 @@
             <!-- Mensajes de éxito y error -->
 
             <span class="close-btn" onclick="closeModal()">&times;</span>
-            <form action="{{ url('/c_post') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ url('admin/d_post') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <label for="titulo">Titulo:</label>
                 <input type="text" id="titulo" name="titulo">

@@ -14,6 +14,6 @@ class ArquitecturaViewer extends Page
 
     public function mount()
     {
-        return redirect('/tabla');
+        return redirect('admin/arqui');
     }
 }
