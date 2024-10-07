@@ -4,6 +4,7 @@
 namespace App\Filament\Pages;
 
 use Filament\Pages\Page;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class ImageViewer extends Page
 {
@@ -14,6 +15,9 @@ class ImageViewer extends Page
     
     public function mount()
     {   
+        if (!auth()->user() || !policy(static::class)->view(auth()->user())) {
+            abort(403); // Acceso denegado
+        }
         return redirect('admin/guia');
     }
 }

@@ -148,30 +148,6 @@ class ApiController extends Controller
             return redirect()->back()->with('error', 'Error: ' . $e->getMessage());
         }
     }
-    
-    public function edit($id)
-{
-    $apiUrl = 'https://backend-culturas.elalto.gob.bo/api/imagens?populate=*';
-    
-    try {
-        $response = Http::withOptions(['verify' => false])->get($apiUrl);
-        if ($response->failed()) {
-            return response()->json(['error' => 'Error al acceder a la API'], 500);
-        }
-
-        $data = $response->json();
-        $userData = collect($data['data'])->firstWhere('id', $id);
-
-        if (!$userData) {
-            return response()->json(['error' => 'Usuario no encontrado'], 404);
-        }
-
-        return view('edit', ['user' => $userData]);
-
-    } catch (\Exception $e) {
-        return response()->json(['error' => $e->getMessage()], 500);
-    }
-}
 public function update(Request $request, $id)
 {
     $client = new Client(['verify' => false]);
@@ -182,6 +158,7 @@ public function update(Request $request, $id)
         'apellidos' => 'required|string|max:255',
         'telefono' => 'required|integer',
         'descripcion' => 'required|string|max:255',
+        // 'genero' => 'required|in:masculino,femenino,otro',
     ]);
 
     // Si hay un archivo, maneja la carga del archivo

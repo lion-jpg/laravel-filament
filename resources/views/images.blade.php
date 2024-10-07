@@ -43,6 +43,26 @@
         background-color: #f4f4f4;
     }
 
+    .button-azul {
+        background-color: #007bff;
+        /* Color de fondo del botón */
+        color: white;
+        /* Texto blanco */
+        border: none;
+        padding: 10px;
+        font-size: 1em;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .button-azul:hover {
+        background-color: #0056b3;
+        /* Color de fondo al pasar el ratón */
+
+        box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.3);
+        /* Aumenta el desplazamiento y la opacidad de la sombra */
+    }
+
     .btn-generate {
         display: inline-block;
         margin-top: 10px;
@@ -194,10 +214,13 @@
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         /* Sombra sutil */
     }
+
     nav img {
-            margin-right: auto; /* Empuja el contenido a la derecha */
-            
-        }
+        margin-right: auto;
+        /* Empuja el contenido a la derecha */
+
+    }
+
     nav a,
     nav button {
         color: white;
@@ -269,6 +292,12 @@
         width: 70px;
         height: auto;
     }
+
+    .image-preview {
+        text-align: center;
+        height: 60%;
+        width: auto;
+    }
     </style>
 </head>
 
@@ -281,17 +310,17 @@
         <button id="openModalBtn" class="btn-ge">Agregar Guia</button>
 
     </nav>
-    <!-- @if (session('success'))
+    @if (session('success'))
     <p class="message success">{{ session('success') }}</p>
     @endif
 
     @if (session('error'))
     <p class="message error">{{ session('error') }}</p>
-    @endif -->
-    <!-- Modal para el formulario -->
+    @endif 
+    <!-- Modal para el formulario-->
+    
     <div id="formModal" class="modal">
         <div class="modal-content">
-            <!-- Mensajes de éxito y error -->
 
             <span class="close-btn" onclick="closeModal()">&times;</span>
             <form action="{{ url('admin/add-data') }}" method="POST" enctype="multipart/form-data">
@@ -308,10 +337,61 @@
                 <label for="descripcion">Descripción:</label>
                 <input type="text" id="descripcion" name="descripcion"></input>
 
+                <!-- <label for="genero">Género:</label>
+                <div>
+                    <input type="radio" id="masculino" name="genero" value="masculino">
+                    <label for="masculino">Masculino</label>
+                </div>
+                <div>
+                    <input type="radio" id="femenino" name="genero" value="femenino">
+                    <label for="femenino">Femenino</label>
+                </div>
+                <div>
+                    <input type="radio" id="otro" name="genero" value="otro">
+                    <label for="otro">Otro</label>
+                </div> -->
+
                 <label for="foto_guia">Foto Guía:</label>
                 <input type="file" id="foto_guia" name="foto_guia" accept="image/*">
 
                 <button type="submit" class="btn-generate">Agregar Datos</button>
+            </form>
+        </div>
+    </div>
+    <!-- Modal para Editar -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeEditModal()">&times;</span>
+            <form id="editForm" method="POST" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
+
+                <label for="edit_nombre">Nombre:</label>
+                <input type="text" id="edit_nombre" name="nombre" value="nombre">
+
+                <label for="edit_apellidos">Apellidos:</label>
+                <input type="text" id="edit_apellidos" name="apellidos" value="apellidos">
+
+                <label for="edit_telefono">Teléfono:</label>
+                <input type="number" id="edit_telefono" name="telefono" value="telefono">
+
+                <label for="edit_descripcion">Descripción:</label>
+                <input type="text" id="edit_descripcion" name="descripcion" value="descripcion">
+
+                <label for="edit_genero">Genero:</label>
+                <input type="text" id="edit_genero" name="genero" value="genero">
+
+                <label for="edit_foto_guia">Foto Guía:</label>
+                <input type="file" id="edit_foto_guia" name="foto_guia" accept="image/*" onchange="previewImage(event)">
+
+                <div class="image-preview" id="imagePreview">
+                    @if (isset($user['attributes']['foto_guia']['data'][0]['attributes']['url']))
+                    <img src="{{ 'https://backend-culturas.elalto.gob.bo' . $user['attributes']['foto_guia']['data'][0]['attributes']['url'] }}"
+                        alt="Imagen de la guía">
+                    @endif
+                </div>
+
+                <button type="submit">Actualizar Datos</button>
             </form>
         </div>
     </div>
@@ -321,10 +401,11 @@
             <thead>
                 <tr>
                     <th>Foto</th>
-                    <th>Nombre</th>
+                    <th>Nombre y Apellido</th>
                     <th>Teléfono</th>
                     <th>Descripción</th>
-                    <th>Acciones</th>
+                    <th>Género</th>
+                    <th>Acciónes</th>
                 </tr>
             </thead>
             <tbody>
@@ -337,11 +418,12 @@
                     <td>{{ $item['attributes']['nombre'] }} {{ $item['attributes']['apellidos'] }}</td>
                     <td>{{ $item['attributes']['telefono'] }}</td>
                     <td>{{ $item['attributes']['descripcion'] }}</td>
+                    <td>{{ $item['attributes']['genero'] }}</td>
                     <td><a href="{{ url('/generate-pdf/' . $item['id']) }}" class="btn-generate">Generate PDF</a>
-                        <button onclick="window.location='{{ url('admin/editar/' . $item['id']) }}'"
-                            class="btn-generate">Editar</button>
-                    </td>
+                        <button class="button-azul"
+                            onclick="openEditModal({{ json_encode($item['attributes']) }}, {{ $item['id'] }})">Editar</button>
 
+                    </td>
                 </tr>
                 @endif
                 @endforeach
@@ -353,6 +435,9 @@
     <script>
     // Obtener el modal
     var modal = document.getElementById("formModal");
+
+    // Obtener el modal de edición
+    var editModal = document.getElementById("editModal");
 
     // Obtener el botón que abre el modal
     var openModalBtn = document.getElementById("openModalBtn");
@@ -374,6 +459,48 @@
     window.onclick = function(event) {
         if (event.target == modal) {
             modal.style.display = "none";
+        }
+    }
+
+    function openEditModal(data, id) {
+        document.getElementById("edit_nombre").value = data.nombre;
+        document.getElementById("edit_apellidos").value = data.apellidos;
+        document.getElementById("edit_descripcion").value = data.descripcion;
+        document.getElementById("edit_telefono").value = data.telefono;
+        document.getElementById("edit_genero").value = data.genero;
+        // Aquí puedes agregar lógica para cargar la imagen si es necesario
+        const imagePreview = document.getElementById('imagePreview');
+        imagePreview.innerHTML = ''; // Limpiar el contenedor de previsualización
+
+        if (data.foto_guia && data.foto_guia.data && data.foto_guia.data.length > 0) {
+            const imgData = data.foto_guia.data[0].attributes;
+            const img = document.createElement('img');
+            img.src = 'https://backend-culturas.elalto.gob.bo' + imgData.url;
+            img.alt = "Guia";
+            img.style.maxWidth = '50%'; // Asegúrate de que la imagen no exceda el contenedor
+            img.style.alin
+            imagePreview.appendChild(img);
+        } else {
+            const message = document.createElement('p');
+            message.textContent = 'No hay imagen disponible.';
+            imagePreview.appendChild(message);
+        }
+        // Configurar la acción del formulario de edición
+        document.getElementById("editForm").action = "{{ url('admin/editar') }}/" +
+            id; // Asegúrate de que el ID esté disponible
+
+        editModal.style.display = "block";
+    }
+    // Función para cerrar el modal de edición
+    function closeEditModal() {
+        editModal.style.display = "none";
+    }
+    // Cerrar modal al hacer clic fuera
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            closeModal();
+        } else if (event.target == editModal) {
+            closeEditModal();
         }
     }
     </script>

@@ -136,6 +136,26 @@
         border-radius: 4px;
     }
 
+    .button-azul {
+        background-color: #007bff;
+        /* Color de fondo del botón */
+        color: white;
+        /* Texto blanco */
+        border: none;
+        padding: 10px;
+        font-size: 1em;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .button-azul:hover {
+        background-color: #0056b3;
+        /* Color de fondo al pasar el ratón */
+
+        box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.3);
+        /* Aumenta el desplazamiento y la opacidad de la sombra */
+    }
+
     button[type="submit"] {
         background-color: #007bff;
         /* Color de fondo del botón */
@@ -221,10 +241,16 @@
         opacity: 0.8;
         /* Efecto de hover para ambos */
     }
-    .img{
-        width: 100px; 
+
+    .img {
+        width: 100px;
         height: 60px;
         border-radius: 10%;
+    }
+    .image-preview{
+        text-align: center;
+        height: 60%;
+        width: auto;
     }
     </style>
 </head>
@@ -267,6 +293,37 @@
             </form>
         </div>
     </div>
+    <!-- Modal para Editar -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeEditModal()">&times;</span>
+            <form id="editForm" method="POST" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
+
+                <label for="edit_titulo">Título:</label>
+                <input type="text" id="edit_titulo" name="titulo">
+
+                <label for="edit_descrip">Descripción:</label>
+                <input type="text" id="edit_descrip" name="descrip">
+
+                <label for="edit_ubicacion">Descripción:</label>
+                <input type="text" id="edit_ubicacion" name="ubicacion">
+
+                <label for="edit_foto_cult">Fotografía:</label>
+                <input type="file" id="edit_foto_cult" name="foto_cult" accept="image/*" onchange="previewImage(event)">
+
+                <div class="image-preview" id="imagePreview">
+                    @if (isset($data['attributes']['foto_cult']['data'][0]['attributes']['url']))
+
+                    <img src="{{ 'https://backend-culturas.elalto.gob.bo'.$data['attributes']['foto_cult']['data'][0]['attributes']['url'] }}"
+                        alt="cultura">
+                    @endif
+                </div>
+                <button class="button-azul" type="submit">Actualizar Contenido</button>
+            </form>
+        </div>
+    </div>
 
     <h1>Turismo Cultural</h1>
     <div class="container">
@@ -277,35 +334,46 @@
                     <th>Título</th>
                     <th>Ubicación</th>
                     <th>Descripción</th>
+                    <th>Acción</th>
                 </tr>
             </thead>
             <tbody>
                 @if(isset($data['data']) && is_array($data['data']))
                 <!-- <pre>{{ print_r($data['data'], true) }}</pre> -->
-                    @foreach ($data['data'] as $item)
-                        @if (isset($item['attributes']['foto_cult']['data'][0]['attributes']['url']))
+                @foreach ($data['data'] as $item)
+                @if (isset($item['attributes']['foto_cult']['data'][0]['attributes']['url']))
 
-                            <tr>
-                                <td>
-                                    <img class="img" src="{{ 'https://backend-culturas.elalto.gob.bo'.$item['attributes']['foto_cult']['data'][0]['attributes']['url'] }}" alt="Image" >
-                                </td>
-                                <td>{{ $item['attributes']['titulo'] }}</td>
-                                <td>{{ $item['attributes']['ubicacion'] }}</td>
-                                <td>{{ $item['attributes']['descrip'] }}</td>
-                            </tr>
-                        @endif
-                    @endforeach
+                <tr>
+                    <td>
+                        <img class="img"
+                            src="{{ 'https://backend-culturas.elalto.gob.bo'.$item['attributes']['foto_cult']['data'][0]['attributes']['url'] }}"
+                            alt="Image">
+                    </td>
+                    <td>{{ $item['attributes']['titulo'] }}</td>
+                    <td>{{ $item['attributes']['descrip'] }}</td>
+                    <td>{{ $item['attributes']['ubicacion'] }}</td>
+                    <td>
+                        <button class="button-azul"
+                            onclick="openEditModal({{ json_encode($item['attributes']) }}, {{ $item['id'] }})">Editar</button>
+
+                    </td>
+                </tr>
+                @endif
+                @endforeach
                 @else
-                    <tr>
-                        <td colspan="4">No data found.</td>
-                    </tr>
-                @endif 
+                <tr>
+                    <td colspan="4">No data found.</td>
+                </tr>
+                @endif
             </tbody>
         </table>
     </div>
     <script>
     // Obtener el modal
     var modal = document.getElementById("formModal");
+
+    // Obtener el modal de edición
+    var editModal = document.getElementById("editModal");
 
     // Obtener el botón que abre el modal
     var openModalBtn = document.getElementById("openModalBtn");
@@ -327,6 +395,46 @@
     window.onclick = function(event) {
         if (event.target == modal) {
             modal.style.display = "none";
+        }
+    }
+
+    function openEditModal(data, id) {
+        document.getElementById("edit_titulo").value = data.titulo;
+        document.getElementById("edit_descrip").value = data.descrip;
+        document.getElementById("edit_ubicacion").value = data.ubicacion;
+        // Aquí puedes agregar lógica para cargar la imagen si es necesario
+        const imagePreview = document.getElementById('imagePreview');
+        imagePreview.innerHTML = ''; // Limpiar el contenedor de previsualización
+
+        if (data.foto_cult && data.foto_cult.data && data.foto_cult.data.length > 0) {
+            const imgData = data.foto_cult.data[0].attributes;
+            const img = document.createElement('img');
+            img.src = 'https://backend-culturas.elalto.gob.bo' + imgData.url;
+            img.alt = "Cultura";
+            img.style.maxWidth = '50%'; // Asegúrate de que la imagen no exceda el contenedor
+            img.style.alin
+            imagePreview.appendChild(img);
+        } else {
+            const message = document.createElement('p');
+            message.textContent = 'No hay imagen disponible.';
+            imagePreview.appendChild(message);
+        }
+        // Configurar la acción del formulario de edición
+        document.getElementById("editForm").action = "{{ url('admin/c_post') }}/" +
+            id; // Asegúrate de que el ID esté disponible
+
+        editModal.style.display = "block";
+    }
+    // Función para cerrar el modal de edición
+    function closeEditModal() {
+        editModal.style.display = "none";
+    }
+    // Cerrar modal al hacer clic fuera
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            closeModal();
+        } else if (event.target == editModal) {
+            closeEditModal();
         }
     }
     </script>

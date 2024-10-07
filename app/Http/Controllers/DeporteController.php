@@ -99,4 +99,72 @@ class DeporteController extends Controller
             return redirect()->back()->with('error', 'Error: ' . $e->getMessage());
         }
     }
+    public function update(Request $request, $id)
+{
+    $client = new Client(['verify' => false]);
+
+    // Valida los datos del formulario
+    $validatedData = $request->validate([
+        'titulo' => 'required|string|max:255',
+        'descri' => 'required|string|max:255',
+        'ubicacion' => 'required|string|max:255',
+        
+    ]);
+
+    // Si hay un archivo, maneja la carga del archivo
+    $file = $request->file('foto_dep');
+    if ($file) {
+        try {
+            // Subir el archivo a /upload y obtener su ID
+            $response = $client->post('https://backend-culturas.elalto.gob.bo/api/upload', [
+                'multipart' => [
+                    [
+                        'name'     => 'files',
+                        'contents' => fopen($file->getRealPath(), 'r'),
+                        'filename' => $file->getClientOriginalName(),
+                    ],
+                ],
+                'headers' => [
+                    'Authorization' => 'Bearer ' . '7b648e5e4c3af96a7f47d7168fdf7d158981888cea87a30fe952ebee679f87abfec93aff1327e3950bc489fc853f09012c7627cdd46429947b42f43c47d9d26a7039a5ed028c3cb40ae088810b9f2ee321632d4c37c783daf3b2739881ebad6deeec567427b183b4c39661deca9c1f551e27b934ffc7bde71f67c36a269e536a',
+                    'Accept'        => 'application/json',
+                ],
+            ]);
+
+            $uploadedFile = json_decode($response->getBody()->getContents(), true);
+
+            // Verifica si se subió correctamente el archivo y obtener su ID
+            if (isset($uploadedFile[0]['id'])) {
+                $validatedData['foto_dep'] = $uploadedFile[0]['id'];
+            } else {
+                return redirect()->back()->with('error', 'Error al subir la imagen');
+            }
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error: ' . $e->getMessage());
+        }
+    }
+
+    // Envía los datos a la API de Strapi para actualizar la entidad
+    try {
+        $response = $client->put("https://backend-culturas.elalto.gob.bo/api/deportes/$id", [
+            'json' => [
+                'data' => $validatedData,
+            ],
+            'headers' => [
+                'Authorization' => 'Bearer ' .  '7b648e5e4c3af96a7f47d7168fdf7d158981888cea87a30fe952ebee679f87abfec93aff1327e3950bc489fc853f09012c7627cdd46429947b42f43c47d9d26a7039a5ed028c3cb40ae088810b9f2ee321632d4c37c783daf3b2739881ebad6deeec567427b183b4c39661deca9c1f551e27b934ffc7bde71f67c36a269e536a',
+                'Accept'        => 'application/json',
+            ],
+        ]);
+
+        // Verificar si la respuesta de Strapi fue exitosa
+        if ($response->getStatusCode() >= 400) {
+            // dd($response->getBody()->getContents()); // Para depurar
+            return redirect()->back()->with('error', 'Error al actualizar los datos');
+        }
+
+        return redirect('admin/deportes')->with('success', 'Datos actualizados correctamente');
+
+    } catch (\Exception $e) {
+        return redirect()->back()->with('error', 'Error: ' . $e->getMessage());
+    }
+}
 }
