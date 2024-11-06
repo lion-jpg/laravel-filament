@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Policies;
 
 use App\Models\User;
@@ -8,7 +7,8 @@ class ImageViewerPolicy
 {
     
     public function viewAny(User $user): bool
-    {
+    {   
+        // dd($user->roles->pluck('name'));
         return $user->hasRole(['admin','editar guia']);
     }
 
@@ -17,7 +17,7 @@ class ImageViewerPolicy
      */
     public function view(User $user): bool
     {
-    
+        // dd($user->roles);
         return $user->hasRole(['admin','editar guia']); // Cambia esto según tu lógica.
     }
 
