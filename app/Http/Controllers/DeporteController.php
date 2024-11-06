@@ -22,7 +22,7 @@ class DeporteController extends Controller
             ])->get($apiUrl);
 
             if ($response->failed()) {
-                return response()->json(['error' => 'Error al acceder a la API'], 500);
+                return view('error');
             }
 
             $data = $response->json();
