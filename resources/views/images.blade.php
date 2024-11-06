@@ -310,13 +310,13 @@
         <button id="openModalBtn" class="btn-ge">Agregar Guia</button>
 
     </nav>
-    @if (session('success'))
+    <!-- @if (session('success'))
     <p class="message success">{{ session('success') }}</p>
     @endif
 
     @if (session('error'))
     <p class="message error">{{ session('error') }}</p>
-    @endif 
+    @endif  -->
     <!-- Modal para el formulario-->
     
     <div id="formModal" class="modal">
@@ -337,7 +337,7 @@
                 <label for="descripcion">Descripción:</label>
                 <input type="text" id="descripcion" name="descripcion"></input>
 
-                <!-- <label for="genero">Género:</label>
+                <label for="genero">Género:</label>
                 <div>
                     <input type="radio" id="masculino" name="genero" value="masculino">
                     <label for="masculino">Masculino</label>
@@ -349,7 +349,7 @@
                 <div>
                     <input type="radio" id="otro" name="genero" value="otro">
                     <label for="otro">Otro</label>
-                </div> -->
+                </div>
 
                 <label for="foto_guia">Foto Guía:</label>
                 <input type="file" id="foto_guia" name="foto_guia" accept="image/*">
