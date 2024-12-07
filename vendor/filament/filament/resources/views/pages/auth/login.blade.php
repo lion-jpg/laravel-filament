@@ -25,7 +25,7 @@
             {{ \Filament\Support\Facades\FilamentView::renderHook('panels::auth.login.form.after') }}
         </x-filament-panels::page.simple>
     </div>
-</div>
+
 
 
 <style>
@@ -80,3 +80,4 @@
 }
 
 </style>
+</div>

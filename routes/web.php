@@ -10,18 +10,19 @@ use App\Http\Controllers\ArquitecturaController;
 use App\Http\Controllers\CulturaController;
 use App\Http\Controllers\DeporteController;
 use App\Http\Controllers\TransporteController;
+use App\Filament\Resources\GuiaResource;
 
 
 
-Route::middleware(['web'])->group(function () {
+Route::middleware(['web', 'auth'])->group(function () {
     Route::get('/', function () {
         return view('welcome');
     });
     
     Route::get('admin/guia', [ApiController::class, 'fetchImages']);
     Route::get('/generate-pdf/{userId}', [ApiController::class, 'generatePdf']);
-    Route::put('admin/editar/{id}', [ApiController::class, 'update']);
-    Route::post('admin/add-data', [ApiController::class, 'post']);
+    Route::put('/admin/editar/{id}', [ApiController::class, 'update']);
+    Route::post('/admin/add-data', [ApiController::class, 'post']);
 
     //************************************* */
     Route::get('admin/arqui',[ArquitecturaController::class, 'v_arqui']);
@@ -40,3 +41,5 @@ Route::middleware(['web'])->group(function () {
     Route::post('admin/t_post', [TransporteController::class, 'post']);
     Route::put('admin/t_post/{id}', [TransporteController::class, 'update']);
 });
+
+

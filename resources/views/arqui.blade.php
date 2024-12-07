@@ -14,7 +14,9 @@
     }
 
     h1 {
+        font-size: 2.5em;
         text-align: center;
+        margin-bottom: 20px;
     }
 
     .container {
@@ -317,7 +319,7 @@
     </div>
 
 
-    <h1>Turismo Arquitectonico</h1>
+    <h1>Turismo Arquitectónico</h1>
     <div class="container">
         <table>
             <thead>
